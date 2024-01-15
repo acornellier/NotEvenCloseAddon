@@ -1,0 +1,15 @@
+{
+  "Lua.diagnostics.globals": [
+    "AddonCompartmentFrame",
+    "ExportUtil",
+    "PlayerUtil",
+    "DEFAULT_CHAT_FRAME",
+    "SlashCmdList",
+    "hash_SlashCmdList",
+    "TooltipDataProcessor",
+    "CR_CRIT_SPELL",
+    "CR_HASTE_SPELL",
+    "CR_MASTERY",
+    "CR_VERSATILITY_DAMAGE_DONE"
+  ]
+}
