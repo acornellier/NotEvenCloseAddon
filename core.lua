@@ -598,8 +598,8 @@ function NotEvenClose:GetNecProfile(debugOutput, links)
   -- Basic player info
   local stamina, _, _, _ = UnitStat("player", 3)
   local _, armor, _, _ = UnitArmor("player")
-  local versatility = GetCombatRating(29)
-  local avoidance = GetCombatRating(21)
+  local versatilityPercent = GetCombatRatingBonus(29)
+  local avoidancePercent = GetCombatRatingBonus(21)
 
   local playerName = UnitName('player')
 
@@ -641,8 +641,8 @@ function NotEvenClose:GetNecProfile(debugOutput, links)
   Profile = Profile .. "class=" .. className .. '\n'
   Profile = Profile .. 'spec=' .. playerSpec .. '\n'
   Profile = Profile .. "stamina=" .. stamina .. '\n'
-  Profile = Profile .. "versatility=" .. versatility .. '\n'
-  Profile = Profile .. "avoidance=" .. avoidance .. '\n'
+  Profile = Profile .. "versatilityPercent=" .. versatilityPercent .. '\n'
+  Profile = Profile .. "avoidancePercent=" .. avoidancePercent .. '\n'
   Profile = Profile .. "armor=" .. armor .. '\n'
   Profile = Profile .. '\n'
 
