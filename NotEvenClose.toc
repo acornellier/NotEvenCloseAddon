@@ -3,7 +3,7 @@
 ## IconTexture: Interface\Addons\NotEvenClose\logo
 ## Notes: Constructs NotEvenClose export strings
 ## Author: Theck, navv_, seriallos
-## Version: 10.2.5-05
+## Version: 10.2.5-06
 ## OptionalDependencies: Ace3, LibRealmInfo, LibDBIcon, LibDataBroker-1.1
 ## SavedVariables: NotEvenCloseDB
 

@@ -99,19 +99,10 @@ function NotEvenClose:UpdateMinimapButton()
   end
 end
 
-local function getLinks(input)
-  local separatedLinks = {}
-  for link in input:gmatch("|c.-|h|r") do
-     separatedLinks[#separatedLinks + 1] = link
-  end
-  return separatedLinks
-end
-
 function NotEvenClose:HandleChatCommand(input)
   local args = {strsplit(' ', input)}
 
   local debugOutput = false
-  local links = getLinks(input)
 
   for _, arg in ipairs(args) do
     if arg == 'debug' then
@@ -126,7 +117,7 @@ function NotEvenClose:HandleChatCommand(input)
     end
   end
 
-  self:PrintProfile(debugOutput, links)
+  self:PrintProfile(debugOutput)
 end
 
 -- method to add spaces to UnitRace names for proper tokenization
@@ -271,7 +262,7 @@ local function adler32(s)
   return (bit.lshift(s2, 16)) + s1
 end --adler32()
 
-function NotEvenClose:GetNecProfile(debugOutput, links)
+function NotEvenClose:GetNecProfile()
   -- addon metadata
   local versionComment = '# NotEvenClose Addon ' .. GetAddOnMetadata('NotEvenClose', 'Version')
   local wowVersion, wowBuild, _, wowToc = GetBuildInfo()
@@ -280,6 +271,7 @@ function NotEvenClose:GetNecProfile(debugOutput, links)
   -- Basic player info
   local stamina, _, _, _ = UnitStat("player", 3)
   local _, armor, _, _ = UnitArmor("player")
+  local versatilityRaw = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
   local versatilityPercent = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
   local avoidancePercent = GetCombatRatingBonus(CR_AVOIDANCE)
 
@@ -323,6 +315,7 @@ function NotEvenClose:GetNecProfile(debugOutput, links)
   Profile = Profile .. "class=" .. className .. '\n'
   Profile = Profile .. 'spec=' .. playerSpec .. '\n'
   Profile = Profile .. "stamina=" .. stamina .. '\n'
+  Profile = Profile .. "versatilityRaw=" .. versatilityRaw .. '\n'
   Profile = Profile .. "versatilityPercent=" .. versatilityPercent .. '\n'
   Profile = Profile .. "avoidancePercent=" .. avoidancePercent .. '\n'
   Profile = Profile .. "armor=" .. armor .. '\n'
@@ -346,8 +339,8 @@ function NotEvenClose:GetNecProfile(debugOutput, links)
 end
 
 -- This is the workhorse function that constructs the profile
-function NotEvenClose:PrintProfile(debugOutput, links)
-  local NotEvenCloseProfile, necPrintError = NotEvenClose:GetNecProfile(debugOutput, links)
+function NotEvenClose:PrintProfile(debugOutput)
+  local NotEvenCloseProfile, necPrintError = NotEvenClose:GetNecProfile()
 
   local f = NotEvenClose:GetMainFrame(necPrintError or NotEvenCloseProfile)
   f:Show()
