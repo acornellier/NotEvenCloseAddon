@@ -273,6 +273,7 @@ function NotEvenClose:GetNecProfile()
   local _, armor, _, _ = UnitArmor("player")
   local versatilityRaw = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
   local versatilityPercent = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
+  local avoidanceRaw = GetCombatRating(CR_AVOIDANCE)
   local avoidancePercent = GetCombatRatingBonus(CR_AVOIDANCE)
 
   local playerName = UnitName('player')
@@ -317,6 +318,7 @@ function NotEvenClose:GetNecProfile()
   Profile = Profile .. "stamina=" .. stamina .. '\n'
   Profile = Profile .. "versatilityRaw=" .. versatilityRaw .. '\n'
   Profile = Profile .. "versatilityPercent=" .. versatilityPercent .. '\n'
+  Profile = Profile .. "avoidanceRaw=" .. avoidanceRaw .. '\n'
   Profile = Profile .. "avoidancePercent=" .. avoidancePercent .. '\n'
   Profile = Profile .. "armor=" .. armor .. '\n'
   Profile = Profile .. '\n'
