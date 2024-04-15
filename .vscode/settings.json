@@ -50,6 +50,15 @@
     "GetItemInfoInstant",
     "date",
     "CR_AVOIDANCE",
-    "TalentUtil"
+    "TalentUtil",
+    "LE_UNIT_STAT_STRENGTH",
+    "LE_UNIT_STAT_AGILITY",
+    "LE_UNIT_STAT_INTELLECT",
+    "LE_PARTY_CATEGORY_INSTANCE",
+    "INSTANCE_CHAT",
+    "RAID",
+    "PARTY",
+    "GetText",
+    "message"
   ]
 }

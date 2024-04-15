@@ -1,9 +1,10 @@
+---@diagnostic disable: inject-field, undefined-field
 -- Ignore some luacheck warnings about global vars, just use a ton of them in WoW Lua
 -- luacheck: no global
 -- luacheck: no self
 local _, NotEvenClose = ...
 
-NotEvenClose = LibStub("AceAddon-3.0"):NewAddon(NotEvenClose, "NotEvenClose", "AceConsole-3.0", "AceEvent-3.0")
+NotEvenClose = LibStub("AceAddon-3.0"):NewAddon(NotEvenClose, "NotEvenClose", "AceComm-3.0", "AceConsole-3.0", "AceEvent-3.0")
 LibRealmInfo = LibStub("LibRealmInfo")
 
 -- Set up DataBroker for minimap button
@@ -31,17 +32,11 @@ LibDBIcon = LibStub("LibDBIcon-1.0")
 
 local NecFrame = nil
 
--- New talents for Dragonflight
-local ClassTalents          = _G.C_ClassTalents
-local Traits                = _G.C_Traits
+local NEC_PROFILE_REQ = "NEC_PROFILE_REQ"
+local NEC_PROFILE_RESP = "NEC_PROFILE_RESP"
 
 -- GetAddOnMetadata was global until 10.1. It's now in C_AddOns. This line will use C_AddOns if available and work in either WoW build
 local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
-
--- Talent string export
-local bitWidthHeaderVersion         = 8
-local bitWidthSpecID                = 16
-local bitWidthRanksPurchased        = 6
 
 -- load stuff from extras.lua
 -- local upgradeTable        = NotEvenClose.upgradeTable
@@ -236,31 +231,15 @@ function NotEvenClose:GetMainFrame(text)
   return NecFrame
 end
 
--- Adapted from https://github.com/philanc/plc/blob/master/plc/checksum.lua
-local function adler32(s)
-  -- return adler32 checksum  (uint32)
-  -- adler32 is a checksum defined by Mark Adler for zlib
-  -- (based on the Fletcher checksum used in ITU X.224)
-  -- implementation based on RFC 1950 (zlib format spec), 1996
-  local prime = 65521 --largest prime smaller than 2^16
-  local s1, s2 = 1, 0
+function NotEvenClose:AppendToMainFrame(text)
+  if not NecFrame or not NecEditBox then return end
 
-  -- limit s size to ensure that modulo prime can be done only at end
-  -- 2^40 is too large for WoW Lua so limit to 2^30
-  if #s > (bit.lshift(1, 30)) then error("adler32: string too large") end
-
-  for i = 1,#s do
-    local b = string.byte(s, i)
-    s1 = s1 + b
-    s2 = s2 + s1
-    -- no need to test or compute mod prime every turn.
-  end
-
-  s1 = s1 % prime
-  s2 = s2 % prime
-
-  return (bit.lshift(s2, 16)) + s1
-end --adler32()
+  local newText = NecEditBox:GetText()
+  newText = newText .. "\n##################\n\n"
+  newText = newText .. text
+  NecEditBox:SetText(newText)
+  NecEditBox:HighlightText()
+end
 
 function NotEvenClose:GetNecProfile()
   -- addon metadata
@@ -323,29 +302,41 @@ function NotEvenClose:GetNecProfile()
   Profile = Profile .. "avoidanceRaw=" .. avoidanceRaw .. '\n'
   Profile = Profile .. "armor=" .. armor .. '\n'
   Profile = Profile .. "mainStat=" .. mainStat .. '\n'
-  Profile = Profile .. '\n'
   Profile = Profile .. "buffs=" .. GetBuffString() .. '\n'
-  Profile = Profile .. '\n'
 
   -- sanity checks - if there's anything that makes the output completely invalid, punt!
   if specId==nil then
     printError = "Error: You need to pick a spec!"
   end
 
-  Profile = Profile .. '\n'
-
-  -- Simple checksum to provide a lightweight verification that the input hasn't been edited/modified
-  local checksum = adler32(Profile)
-
-  Profile = Profile .. '# Checksum: ' .. string.format('%x', checksum)
-
   return Profile, printError
 end
 
 -- This is the workhorse function that constructs the profile
 function NotEvenClose:PrintProfile(debugOutput)
+  print("NEC: Requesting data from party members. They will only repond if they have the addon.")
+  NotEvenClose:SendCommMessage(NEC_PROFILE_REQ, "hi", "PARTY")
+
   local NotEvenCloseProfile, necPrintError = NotEvenClose:GetNecProfile()
 
   local f = NotEvenClose:GetMainFrame(necPrintError or NotEvenCloseProfile)
   f:Show()
 end
+
+-------------
+--- COMMS ---
+-------------
+
+function NotEvenClose:OnReqReceived(prefix, message, distribution, sender)
+  -- print("NEC: data requested by " .. sender)
+  local Profile, necPrintError = NotEvenClose:GetNecProfile()
+  NotEvenClose:SendCommMessage(NEC_PROFILE_RESP, necPrintError or Profile, "PARTY")
+end
+
+function NotEvenClose:OnRespReceived(prefix, profile, distribution, sender)
+  print("NEC: data received from " .. sender)
+  NotEvenClose:AppendToMainFrame(profile)
+end
+
+NotEvenClose:RegisterComm(NEC_PROFILE_REQ, "OnReqReceived")
+NotEvenClose:RegisterComm(NEC_PROFILE_RESP, "OnRespReceived")
