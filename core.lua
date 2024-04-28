@@ -334,6 +334,9 @@ function NotEvenClose:OnReqReceived(prefix, message, distribution, sender)
 end
 
 function NotEvenClose:OnRespReceived(prefix, profile, distribution, sender)
+  local playerName = UnitName('player')
+  if sender == playerName then return end
+
   print("NEC: data received from " .. sender)
   NotEvenClose:AppendToMainFrame(profile)
 end
