@@ -6,7 +6,7 @@
 ## Version: 10.2.7-01
 ## OptionalDependencies: Ace3, LibRealmInfo, LibDBIcon, LibDataBroker-1.1
 ## SavedVariables: NotEvenCloseDB
-
+## X-Curse-Project-ID: 962057
 
 libs\LibStub\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
