@@ -125,6 +125,13 @@ local function FormatRace(str)
   return string.join(' ', unpack(matches))
 end
 
+local function GetClass()
+  local _, classFilename, _ = UnitClass("player")
+  if classFilename == "DEATHKNIGHT" then return "Death Knight" end
+  if classFilename == "DEMONHUNTER" then return "Demon Hunter" end
+  return classFilename:lower():gsub("^%l", string.upper)
+end
+
 local function GetBuffString()
   local buffs = {}
   AuraUtil.ForEachAura("player", "HELPFUL", 999999, function(...)
@@ -271,11 +278,11 @@ function NotEvenClose:GetNecProfile()
   end
 
   -- Spec info
-  local className, _, _ = UnitClass("player")
-  local role, globalSpecID
+  local className = GetClass()
+  local globalSpecID
   local specId = GetSpecialization()
   if specId then
-    globalSpecID,_,_,_,_,role = GetSpecializationInfo(specId)
+    globalSpecID,_,_,_,_,_ = GetSpecializationInfo(specId)
   end
   local playerSpec = specNames[globalSpecID] or 'unknown'
 
