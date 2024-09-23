@@ -141,6 +141,58 @@ local function GetBuffString()
   return table.concat(buffs, ",")
 end
 
+local function GetSpellListString()
+  local spellList = {}
+  for i = 1, C_SpellBook.GetNumSpellBookSkillLines() do
+    local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(i)
+    local offset, numSlots = skillLineInfo.itemIndexOffset, skillLineInfo.numSpellBookItems
+    for j = offset+1, offset+numSlots do
+      local spellBookItemInfo = C_SpellBook.GetSpellBookItemInfo(j, Enum.SpellBookSpellBank.Player)
+      table.insert(spellList, spellBookItemInfo.actionID)
+    end
+  end
+
+  return table.concat(spellList, ",")
+end
+
+local function GetTalentListString()
+  local configId = C_ClassTalents.GetActiveConfigID()
+  local configInfo = C_Traits.GetConfigInfo(configId)
+
+  if not configInfo then
+    return nil
+  end
+
+  ---@type table<number, number>
+  local talentsMap = {}
+
+  for _, treeId in ipairs(configInfo.treeIDs) do
+    local nodes = C_Traits.GetTreeNodes(treeId)
+
+    for _, treeNodeId in ipairs(nodes) do
+      local treeNode = C_Traits.GetNodeInfo(configId, treeNodeId)
+
+      if treeNode.activeEntry and treeNode.activeRank > 0 then
+        local entryInfo = C_Traits.GetEntryInfo(configId, treeNode.activeEntry.entryID)
+
+        if entryInfo.definitionID then
+          local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+
+          if definitionInfo.spellID then
+            talentsMap[definitionInfo.spellID] = treeNode.activeRank
+          end
+        end
+      end
+    end
+  end
+
+  local talentsMapString = '['
+  for k, v in pairs(talentsMap) do
+    talentsMapString = talentsMapString .. '[' .. k .. ',' .. v .. '],'
+  end
+  return talentsMapString:sub(1, -2) .. ']'
+end
+
 function NotEvenClose:GetMainFrame(text)
   -- Frame code largely adapted from https://www.wowinterface.com/forums/showpost.php?p=323901&postcount=2
   if not NecFrame then
@@ -310,6 +362,8 @@ function NotEvenClose:GetNecProfile()
   Profile = Profile .. "armor=" .. armor .. '\n'
   Profile = Profile .. "mainStat=" .. mainStat .. '\n'
   Profile = Profile .. "buffs=" .. GetBuffString() .. '\n'
+  Profile = Profile .. "spells=" .. GetSpellListString() .. '\n'
+  Profile = Profile .. "talents=" .. GetTalentListString() .. '\n'
 
   -- sanity checks - if there's anything that makes the output completely invalid, punt!
   if specId==nil then

@@ -59,6 +59,10 @@
     "RAID",
     "PARTY",
     "GetText",
-    "message"
+    "message",
+    "AuraUtil",
+    "Minimap",
+    "WOW_PROJECT_ID",
+    "WOW_PROJECT_MAINLINE"
   ]
 }

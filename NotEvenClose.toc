@@ -1,9 +1,9 @@
-## Interface: 100207
+## Interface: 110002
 ## Title: NotEvenClose
 ## IconTexture: Interface\Addons\NotEvenClose\logo
 ## Notes: Constructs NotEvenClose export strings
 ## Author: Theck, navv_, seriallos
-## Version: 10.2.7-01
+## Version: 11.0.2-01
 ## OptionalDependencies: Ace3, LibRealmInfo, LibDBIcon, LibDataBroker-1.1
 ## SavedVariables: NotEvenCloseDB
 ## X-Curse-Project-ID: 962057
