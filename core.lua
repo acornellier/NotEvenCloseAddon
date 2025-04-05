@@ -178,8 +178,9 @@ local function GetTalentListString()
         if entryInfo.definitionID then
           local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
 
-          if definitionInfo.spellID then
-            talentsMap[definitionInfo.spellID] = treeNode.activeRank
+          local spellId = definitionInfo.spellID
+          if spellId and IsPlayerSpell(spellId) then
+            talentsMap[spellId] = treeNode.activeRank
           end
         end
       end
