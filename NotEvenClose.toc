@@ -1,4 +1,4 @@
-## Interface: 120000
+## Interface: 120005
 ## Title: NotEvenClose
 ## IconTexture: Interface\Addons\NotEvenClose\logo
 ## Notes: Constructs NotEvenClose export strings
